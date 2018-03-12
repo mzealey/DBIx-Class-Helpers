@@ -62,6 +62,18 @@ AutoRemoveColumns: {
       ],
       [{ name => 1, id => 1 }],
       'chaining and +columns works with remove_columns';
+
+   my $prefetch = $schema->resultset('Gnarly_Station')->search({}, {
+    prefetch => 'gnarly',
+    order_by => 'id',
+    rows => 1
+   });
+   cmp_deeply
+      [
+        { $prefetch->single->gnarly->get_columns }
+      ],
+      [{ id => 1, name => 'frew' }],
+      'Prefetching a linked table should not include removed columns';
 }
 
 done_testing;
